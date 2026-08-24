@@ -42,7 +42,7 @@ body {
 .screen.active { display: block; }
 
 /* ── Login ── */
-#screen-login {
+#screen-login.active {
   display: flex; align-items: center; justify-content: center;
   padding: 1.5rem;
   background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%);
