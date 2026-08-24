@@ -50,7 +50,7 @@ export async function getProfile(userId) {
     .from('profiles')
     .select('*')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
   return data;
 }
 
@@ -58,10 +58,13 @@ export async function getProfile(userId) {
 
 /** Returns { family_id, role, families: { id, name, join_code } } or null */
 export async function getUserFamily() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
   const { data } = await supabase
     .from('family_members')
     .select('family_id, role, families(id, name, join_code)')
-    .single();
+    .eq('user_id', user.id)
+    .maybeSingle();
   return data;
 }
 
