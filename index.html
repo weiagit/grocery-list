@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2d6a4f" />
+  <meta name="description" content="Private family grocery list" />
+  <title>Family Groceries</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+</head>
+<body>
+
+  <!-- ── Login Screen ── -->
+  <div id="screen-login" class="screen active" role="main" aria-label="Login">
+    <div class="login-card">
+      <div class="app-logo" aria-hidden="true">🛒</div>
+      <h1>Family Groceries</h1>
+      <p class="subtitle">Enter the family password to continue</p>
+      <form id="login-form" novalidate>
+        <label for="password-input" class="visually-hidden">Family password</label>
+        <input
+          id="password-input"
+          type="password"
+          placeholder="Family password"
+          autocomplete="current-password"
+          required
+          aria-required="true"
+        />
+        <div id="login-error" class="error-msg" role="alert" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary btn-full">Sign in</button>
+      </form>
+      <p class="hint">First time? The default password is <strong>family</strong>.<br>Change it in Settings after signing in.</p>
+    </div>
+  </div>
+
+  <!-- ── App Shell ── -->
+  <div id="screen-app" class="screen" role="main" aria-label="Grocery list app">
+
+    <!-- Header -->
+    <header class="app-header">
+      <h1 id="family-name-header">Family Groceries</h1>
+      <div class="header-actions">
+        <button id="btn-search-toggle" class="icon-btn" aria-label="Toggle search" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search bar (hidden by default) -->
+    <div id="search-bar" class="search-bar hidden" role="search">
+      <label for="search-input" class="visually-hidden">Search groceries</label>
+      <input id="search-input" type="search" placeholder="Search items…" aria-label="Search groceries" />
+    </div>
+
+    <!-- Navigation tabs -->
+    <nav class="tab-bar" role="tablist" aria-label="Main navigation">
+      <button class="tab active" data-tab="list" role="tab" aria-selected="true" aria-controls="tab-list">List</button>
+      <button class="tab" data-tab="activity" role="tab" aria-selected="false" aria-controls="tab-activity">Activity</button>
+      <button class="tab" data-tab="settings" role="tab" aria-selected="false" aria-controls="tab-settings">Settings</button>
+    </nav>
+
+    <!-- ── Tab: Grocery List ── -->
+    <div id="tab-list" class="tab-panel active" role="tabpanel" aria-label="Grocery list">
+
+      <!-- Add item form -->
+      <form id="add-form" class="add-form" novalidate aria-label="Add grocery item">
+        <div class="add-row">
+          <label for="item-name" class="visually-hidden">Item name</label>
+          <input
+            id="item-name"
+            type="text"
+            placeholder="Add an item…"
+            maxlength="200"
+            autocomplete="off"
+            required
+            aria-required="true"
+          />
+          <button type="button" id="btn-add-details" class="icon-btn" aria-label="Show more options" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button type="submit" class="btn btn-primary" aria-label="Add item">Add</button>
+        </div>
+
+        <!-- Optional extra fields -->
+        <div id="add-details" class="add-details hidden" aria-hidden="true">
+          <div class="field-row">
+            <label for="item-quantity">Quantity</label>
+            <input id="item-quantity" type="text" placeholder="e.g. 2 gallons" maxlength="100" />
+          </div>
+          <div class="field-row">
+            <label for="item-category">Category</label>
+            <select id="item-category">
+              <option value="">— None —</option>
+              <option value="Produce">Produce</option>
+              <option value="Meat">Meat</option>
+              <option value="Dairy">Dairy</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Frozen">Frozen</option>
+              <option value="Pantry">Pantry</option>
+              <option value="Drinks">Drinks</option>
+              <option value="Household">Household</option>
+              <option value="Personal Care">Personal Care</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label for="item-notes">Notes</label>
+            <input id="item-notes" type="text" placeholder="Optional notes" maxlength="1000" />
+          </div>
+        </div>
+      </form>
+
+      <!-- Offline banner -->
+      <div id="offline-banner" class="offline-banner hidden" role="status" aria-live="polite">
+        You're offline. Changes will be saved locally.
+      </div>
+
+      <!-- List content -->
+      <div id="list-content" aria-live="polite" aria-label="Grocery items">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="empty-state hidden" aria-live="polite">
+        <div class="empty-icon" aria-hidden="true">🛍️</div>
+        <p>Your list is empty.</p>
+        <p class="subtle">Add the first item above.</p>
+      </div>
+    </div>
+
+    <!-- ── Tab: Activity ── -->
+    <div id="tab-activity" class="tab-panel hidden" role="tabpanel" aria-label="Recent activity">
+      <h2 class="section-title">Recent Activity</h2>
+      <div id="activity-list" aria-live="polite">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ── Tab: Settings ── -->
+    <div id="tab-settings" class="tab-panel hidden" role="tabpanel" aria-label="Settings">
+      <h2 class="section-title">Settings</h2>
+
+      <section class="settings-group" aria-label="Family">
+        <h3>Family</h3>
+        <div class="field-row">
+          <label for="settings-family-name">Family name</label>
+          <input id="settings-family-name" type="text" maxlength="100" placeholder="e.g. The Smiths" />
+        </div>
+        <button id="btn-save-family-name" class="btn btn-secondary">Save name</button>
+      </section>
+
+      <section class="settings-group" aria-label="Security">
+        <h3>Change password</h3>
+        <div class="field-row">
+          <label for="settings-old-pw">Current password</label>
+          <input id="settings-old-pw" type="password" autocomplete="current-password" />
+        </div>
+        <div class="field-row">
+          <label for="settings-new-pw">New password</label>
+          <input id="settings-new-pw" type="password" autocomplete="new-password" minlength="4" />
+        </div>
+        <div class="field-row">
+          <label for="settings-new-pw2">Confirm new password</label>
+          <input id="settings-new-pw2" type="password" autocomplete="new-password" minlength="4" />
+        </div>
+        <div id="pw-change-msg" class="msg" role="alert" aria-live="polite"></div>
+        <button id="btn-change-pw" class="btn btn-secondary">Change password</button>
+      </section>
+
+      <section class="settings-group" aria-label="Data management">
+        <h3>Data</h3>
+        <button id="btn-export-csv" class="btn btn-secondary">Export list as CSV</button>
+        <button id="btn-clear-purchased" class="btn btn-secondary">Clear purchased items</button>
+        <button id="btn-clear-all" class="btn btn-danger">Clear entire list</button>
+      </section>
+
+      <section class="settings-group" aria-label="Session">
+        <h3>Account</h3>
+        <button id="btn-logout" class="btn btn-secondary">Sign out</button>
+      </section>
+    </div>
+
+  </div><!-- /screen-app -->
+
+  <!-- ── Edit Item Modal ── -->
+  <div id="modal-edit" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Edit item">
+    <div class="modal">
+      <h2>Edit item</h2>
+      <form id="edit-form" novalidate>
+        <div class="field-row">
+          <label for="edit-name">Name</label>
+          <input id="edit-name" type="text" maxlength="200" required aria-required="true" />
+        </div>
+        <div class="field-row">
+          <label for="edit-quantity">Quantity</label>
+          <input id="edit-quantity" type="text" maxlength="100" />
+        </div>
+        <div class="field-row">
+          <label for="edit-category">Category</label>
+          <select id="edit-category">
+            <option value="">— None —</option>
+            <option value="Produce">Produce</option>
+            <option value="Meat">Meat</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Bakery">Bakery</option>
+            <option value="Frozen">Frozen</option>
+            <option value="Pantry">Pantry</option>
+            <option value="Drinks">Drinks</option>
+            <option value="Household">Household</option>
+            <option value="Personal Care">Personal Care</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label for="edit-notes">Notes</label>
+          <input id="edit-notes" type="text" maxlength="1000" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-edit-cancel" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Delete Confirm Modal ── -->
+  <div id="modal-delete" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Confirm delete">
+    <div class="modal">
+      <h2>Delete item?</h2>
+      <p id="modal-delete-name" class="modal-item-name"></p>
+      <div class="modal-actions">
+        <button id="btn-delete-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="btn-delete-confirm" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js" type="module"></script>
+</body>
+</html>
