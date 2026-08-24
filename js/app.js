@@ -45,6 +45,7 @@ function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const map = { login: 'screen-login', setup: 'screen-setup', app: 'screen-app' };
   document.getElementById(map[name] || name).classList.add('active');
+  window.scrollTo(0, 0);
 }
 
 // ── Tab management ────────────────────────────────────────────────────────
