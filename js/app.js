@@ -12,7 +12,8 @@ let displayName    = '';
 let searchQuery    = '';
 let editingId      = null;
 let deletingId     = null;
-let realtimeChannel = null;
+let realtimeChannel  = null;
+let _suppressAuthNav = false; // prevents auth listener racing signup flow
 
 // Offline item cache
 const CACHE_KEY = 'fgl_items_cache';
@@ -427,32 +428,34 @@ function initEvents() {
     if (password.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
     if (familyOpt === 'join' && !joinCode) { errEl.textContent = 'Please enter the invite code.'; return; }
 
+    // Suppress the auth listener so it doesn't call loadAndShowApp() before
+    // the family has been created (race condition).
+    _suppressAuthNav = true;
     setLoading(btn, true, 'Create account');
-    const { data: authData, error: authError } = await db.signUp(email, password, name);
-    if (authError) {
-      setLoading(btn, false, 'Create account');
-      errEl.textContent = authError.message;
-      return;
-    }
-    if (!authData.session) {
-      setLoading(btn, false, 'Create account');
-      errEl.style.color = 'var(--green)';
-      errEl.textContent = 'Account created! Check your email to confirm, then sign in.';
-      return;
-    }
+    try {
+      const { data: authData, error: authError } = await db.signUp(email, password, name);
+      if (authError) { errEl.textContent = authError.message; return; }
 
-    // Session exists — join or create family
-    const { data: famData } = familyOpt === 'join'
-      ? await db.joinFamily(joinCode)
-      : await db.createFamily(newFam || name + "'s Family");
+      if (!authData.session) {
+        errEl.style.color = 'var(--green)';
+        errEl.textContent = 'Account created! Check your email to confirm, then sign in.';
+        return;
+      }
 
-    if (famData?.error) {
+      const profile = await db.getProfile(authData.session.user.id);
+      displayName   = profile?.display_name || name;
+
+      const { data: famData } = familyOpt === 'join'
+        ? await db.joinFamily(joinCode)
+        : await db.createFamily(newFam || name + "'s Family");
+
+      if (famData?.error) { errEl.textContent = famData.error; return; }
+
+      await loadAndShowApp();
+    } finally {
+      _suppressAuthNav = false;
       setLoading(btn, false, 'Create account');
-      errEl.textContent = famData.error;
-      return;
     }
-    setLoading(btn, false, 'Create account');
-    // onAuthStateChange will fire → loadAndShowApp()
   });
 
   // ── Setup screen: join ──
@@ -655,7 +658,7 @@ async function init() {
     if (event === 'SIGNED_OUT') {
       if (realtimeChannel) { realtimeChannel.unsubscribe(); realtimeChannel = null; }
       showScreen('login');
-    } else if (session) {
+    } else if (session && !_suppressAuthNav) {
       const profile = await db.getProfile(session.user.id);
       displayName   = profile?.display_name || session.user.email.split('@')[0];
       await loadAndShowApp();
