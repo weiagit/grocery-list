@@ -18,20 +18,74 @@
       <div class="app-logo" aria-hidden="true">🛒</div>
       <h1>Family Groceries</h1>
       <p class="subtitle">Enter the family password to continue</p>
-      <form id="login-form" novalidate>
-        <label for="password-input" class="visually-hidden">Family password</label>
-        <input
-          id="password-input"
-          type="password"
-          placeholder="Family password"
-          autocomplete="current-password"
-          required
-          aria-required="true"
-        />
-        <div id="login-error" class="error-msg" role="alert" aria-live="polite"></div>
+      <!-- Sign in / Sign up toggle -->
+      <div class="auth-mode" role="tablist" aria-label="Authentication mode">
+        <button class="auth-tab active" data-mode="signin" role="tab" aria-selected="true">Sign in</button>
+        <button class="auth-tab"         data-mode="signup" role="tab" aria-selected="false">Sign up</button>
+      </div>
+
+      <!-- Sign in form -->
+      <form id="signin-form" novalidate>
+        <label for="signin-email" class="visually-hidden">Email address</label>
+        <input id="signin-email" type="email" placeholder="Email" autocomplete="email" required aria-required="true" />
+        <label for="signin-password" class="visually-hidden">Password</label>
+        <input id="signin-password" type="password" placeholder="Password" autocomplete="current-password" required aria-required="true" />
+        <div id="signin-error" class="error-msg" role="alert" aria-live="polite"></div>
         <button type="submit" class="btn btn-primary btn-full">Sign in</button>
       </form>
-      <p class="hint">First time? The default password is <strong>family</strong>.<br>Change it in Settings after signing in.</p>
+
+      <!-- Sign up form -->
+      <form id="signup-form" class="hidden" novalidate>
+        <label for="signup-name" class="visually-hidden">Your name</label>
+        <input id="signup-name" type="text" placeholder="Your name" maxlength="100" required aria-required="true" />
+        <label for="signup-email" class="visually-hidden">Email address</label>
+        <input id="signup-email" type="email" placeholder="Email" autocomplete="email" required aria-required="true" />
+        <label for="signup-password" class="visually-hidden">Password</label>
+        <input id="signup-password" type="password" placeholder="Password (min 6 chars)" autocomplete="new-password" minlength="6" required aria-required="true" />
+        <fieldset class="family-setup">
+          <legend class="family-setup-legend">Family</legend>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="family-opt" value="join" checked /> Join with invite code
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="family-opt" value="create" /> Create a new family
+            </label>
+          </div>
+          <label for="signup-join-code" class="visually-hidden">Invite code</label>
+          <input id="signup-join-code" type="text" placeholder="Invite code (e.g. ABC12345)" maxlength="20" autocomplete="off" />
+          <label for="signup-family-name" class="visually-hidden">Family name</label>
+          <input id="signup-family-name" type="text" placeholder="Family name" maxlength="100" class="hidden" />
+        </fieldset>
+        <div id="signup-error" class="error-msg" role="alert" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary btn-full">Create account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Family Setup Screen ── -->
+  <div id="screen-setup" class="screen" role="main" aria-label="Family setup">
+    <div class="login-card">
+      <div class="app-logo" aria-hidden="true">🛒</div>
+      <h1>Welcome!</h1>
+      <p class="subtitle">You're signed in but not part of a family yet.<br>Join with an invite code or create a new one.</p>
+
+      <form id="setup-join-form" novalidate>
+        <label for="setup-join-code" class="visually-hidden">Invite code</label>
+        <input id="setup-join-code" type="text" placeholder="Invite code (e.g. ABC12345)" maxlength="20" autocomplete="off" />
+        <button type="submit" class="btn btn-primary btn-full">Join family</button>
+      </form>
+
+      <div class="setup-divider">or</div>
+
+      <form id="setup-create-form" novalidate>
+        <label for="setup-family-name" class="visually-hidden">Family name</label>
+        <input id="setup-family-name" type="text" placeholder="Family name (e.g. The Smiths)" maxlength="100" />
+        <button type="submit" class="btn btn-secondary btn-full">Create new family</button>
+      </form>
+
+      <div id="setup-error" class="error-msg" role="alert" aria-live="polite"></div>
+      <button id="btn-setup-logout" class="btn-link">Sign out</button>
     </div>
   </div>
 
@@ -151,19 +205,29 @@
         <button id="btn-save-family-name" class="btn btn-secondary">Save name</button>
       </section>
 
+      <section id="join-code-section" class="settings-group hidden" aria-label="Invite code">
+        <h3>Invite code</h3>
+        <p class="subtle">Share this code so family members can join when they sign up.</p>
+        <div class="join-code-row">
+          <span id="join-code-display" class="join-code-text" aria-label="Invite code"></span>
+          <button id="btn-copy-code" class="btn btn-secondary btn-sm">Copy</button>
+        </div>
+      </section>
+
+      <section class="settings-group" aria-label="Family members">
+        <h3>Members</h3>
+        <div id="members-list"></div>
+      </section>
+
       <section class="settings-group" aria-label="Security">
         <h3>Change password</h3>
         <div class="field-row">
-          <label for="settings-old-pw">Current password</label>
-          <input id="settings-old-pw" type="password" autocomplete="current-password" />
-        </div>
-        <div class="field-row">
           <label for="settings-new-pw">New password</label>
-          <input id="settings-new-pw" type="password" autocomplete="new-password" minlength="4" />
+          <input id="settings-new-pw" type="password" autocomplete="new-password" minlength="6" />
         </div>
         <div class="field-row">
           <label for="settings-new-pw2">Confirm new password</label>
-          <input id="settings-new-pw2" type="password" autocomplete="new-password" minlength="4" />
+          <input id="settings-new-pw2" type="password" autocomplete="new-password" minlength="6" />
         </div>
         <div id="pw-change-msg" class="msg" role="alert" aria-live="polite"></div>
         <button id="btn-change-pw" class="btn btn-secondary">Change password</button>

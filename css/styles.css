@@ -317,6 +317,111 @@ body {
 .modal-actions { display: flex; gap: .75rem; justify-content: flex-end; margin-top: .5rem; }
 #edit-form { display: flex; flex-direction: column; gap: .75rem; }
 
+/* ── Auth mode tabs ── */
+.auth-mode {
+  display: flex; margin-bottom: 1.25rem;
+  border: 2px solid var(--gray-200); border-radius: var(--radius); overflow: hidden;
+}
+.auth-tab {
+  flex: 1; padding: .6rem; background: none; border: none;
+  font-size: .9rem; font-weight: 600; cursor: pointer; color: var(--gray-600);
+  transition: background .15s, color .15s; min-height: 40px;
+}
+.auth-tab.active { background: var(--green); color: #fff; }
+.auth-tab:focus-visible { outline: 3px solid var(--green); outline-offset: -3px; }
+
+/* Login / setup form inputs (flat list) */
+.login-card form > input,
+.login-card form > .family-setup {
+  margin-bottom: .65rem;
+}
+.login-card form > input {
+  display: block; width: 100%; padding: .7rem 1rem;
+  border: 2px solid var(--gray-200); border-radius: var(--radius);
+  font-size: 1rem; transition: border-color .2s;
+}
+.login-card form > input:focus { outline: none; border-color: var(--green); }
+
+/* Family setup fieldset */
+.family-setup {
+  border: 2px solid var(--gray-200); border-radius: var(--radius);
+  padding: .75rem; display: flex; flex-direction: column; gap: .6rem;
+}
+.family-setup-legend {
+  font-size: .8rem; font-weight: 700; color: var(--gray-600); padding: 0 .25rem;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.radio-group { display: flex; flex-direction: column; gap: .4rem; }
+.radio-label {
+  display: flex; align-items: center; gap: .5rem; font-size: .9rem;
+  cursor: pointer; padding: .2rem 0;
+}
+.radio-label input[type="radio"] { accent-color: var(--green); width: 16px; height: 16px; }
+.family-setup input[type="text"] {
+  width: 100%; padding: .6rem .75rem;
+  border: 2px solid var(--gray-200); border-radius: 8px;
+  font-size: .95rem; transition: border-color .2s;
+}
+.family-setup input[type="text"]:focus { outline: none; border-color: var(--green); }
+
+/* Setup screen divider */
+.setup-divider {
+  text-align: center; color: var(--gray-400); font-size: .85rem;
+  margin: .75rem 0; position: relative;
+}
+.setup-divider::before, .setup-divider::after {
+  content: ''; position: absolute; top: 50%; width: 40%; height: 1px;
+  background: var(--gray-200);
+}
+.setup-divider::before { left: 0; }
+.setup-divider::after  { right: 0; }
+
+.setup-create-form { margin-top: 0; }
+
+/* Setup form spacing */
+#setup-join-form, #setup-create-form {
+  display: flex; flex-direction: column; gap: .6rem;
+}
+#setup-join-form input, #setup-create-form input {
+  display: block; width: 100%; padding: .7rem 1rem;
+  border: 2px solid var(--gray-200); border-radius: var(--radius);
+  font-size: 1rem; transition: border-color .2s;
+}
+#setup-join-form input:focus, #setup-create-form input:focus {
+  outline: none; border-color: var(--green);
+}
+.btn-link {
+  background: none; border: none; color: var(--gray-600); font-size: .85rem;
+  cursor: pointer; text-decoration: underline; padding: .5rem;
+  display: block; margin: .5rem auto 0;
+}
+.btn-link:hover { color: var(--gray-800); }
+
+/* Join code display in settings */
+.join-code-row {
+  display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+}
+.join-code-text {
+  font-family: monospace; font-size: 1.4rem; font-weight: 700;
+  letter-spacing: .15em; color: var(--green-dark);
+  background: var(--green-light); padding: .3rem .75rem; border-radius: 8px;
+}
+.btn-sm { padding: .4rem .75rem; font-size: .85rem; min-height: 36px; }
+
+/* Family members list */
+.member-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .5rem 0; border-bottom: 1px solid var(--gray-200);
+}
+.member-item:last-child { border-bottom: none; }
+.member-name  { font-size: .95rem; }
+.member-role  {
+  font-size: .75rem; font-weight: 700; padding: .2rem .5rem;
+  border-radius: 999px; text-transform: capitalize;
+}
+.role-admin  { background: var(--green-light); color: var(--green-dark); }
+.role-member { background: var(--gray-200);    color: var(--gray-600);   }
+
 /* ── Desktop layout ── */
 @media (min-width: 700px) {
   #screen-app {

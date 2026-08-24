@@ -1,11 +1,13 @@
 // Family Grocery List — Service Worker
-const CACHE_NAME = 'fgl-v1';
+const CACHE_NAME = 'fgl-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/css/styles.css',
-  '/js/app.js',
-  '/manifest.json',
+  './',
+  './index.html',
+  './css/styles.css',
+  './js/app.js',
+  './js/db.js',
+  './js/config.js',
+  './manifest.json',
 ];
 
 // Install: cache all app assets
