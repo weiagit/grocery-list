@@ -5,5 +5,5 @@
 // client-side code. Row Level Security enforces all access control.
 // Never commit or expose the service_role key.
 
-export const SUPABASE_URL      = 'https://YOUR_PROJECT_REF.supabase.co';
-export const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+export const SUPABASE_URL      = 'https://umycxaswqgkmvogxdlnz.supabase.co';
+export const SUPABASE_ANON_KEY = 'sb_publishable_kR6hT4ebxk8r8OdBHmGbDQ_9D1PRonl';
